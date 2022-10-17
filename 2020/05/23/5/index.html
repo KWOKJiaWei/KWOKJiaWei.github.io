@@ -24,7 +24,7 @@
 
   
 
-  <title>文章分类 | Kwok</title>
+  <title>JavaScript原型,原型链?有什么特点 | Kwok</title>
 
   
 
@@ -46,7 +46,7 @@
   <div class="root-container">
     
 <!-- header container -->
-<header class="header-container">
+<header class="header-container post">
   
     <div class="post-image" style="background-image: url(https://qiniu.sukoshi.xyz/src/images/68686407_p0.jpg)"></div>
   
@@ -96,36 +96,151 @@
 
   
   
-
-  
-  
     <div class="header-content">
-      <div class="post-text layout-block layout-padding">
-        <h1 class="title-wrap">文章分类</h1>
-        
+      <div class="post-text layout-block">
+        <div class="layout-margin">
+          <h1 class="title-wrap">JavaScript原型,原型链?有什么特点</h1>
+          <h2 class="title-sub-wrap">
+            <strong>KWOK JiaWei</strong>
+            <span>发布于</span>
+            <time  class="article-date" datetime="2020-05-23T14:31:01.000Z" itemprop="datePublished">2020-05-23</time>
+          </h2>
+          <ul class="wrap-list dark">
+  
+    <li><a href="/categories/JavaScript/">📒 JavaScript</a></li>
+  
+</ul>
+          <ul class="wrap-list dark">
+  
+    <li><a href="/tags/JavaScript/">🏷️ JavaScript</a></li>
+  
+</ul>
+        </div>
       </div>
     </div>
+  
+
+  
   
   
 </header>
 
-    <!-- 分页(其他自定义页面) -->
+    <!-- 文章 -->
 
-<!-- 自定义页面 -->
-
+<!-- 文章内容 -->
 <div class="body-container">
   <article class="content-container layout-block post-container">
     <div class="article-info">
       
+      
+      
+      
       <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
-        
+        <p><img src="/image/05/prototype_banner.png"></p>
+<h3 id="一、原型"><a href="#一、原型" class="headerlink" title="一、原型"></a>一、原型</h3><p>JavaScript 常被描述为一种基于原型的语言——每个对象拥有一个原型对象</p>
+<p>当试图访问一个对象的属性时，它不仅仅在该对象上搜寻，还会搜寻该对象的原型，以及该对象的原型的原型，依次层层向上搜索，直到找到一个名字匹配的属性或到达原型链的末尾</p>
+<p>准确地说，这些属性和方法定义在Object的构造器函数（constructor functions）之上的prototype属性上，而非实例对象本身</p>
+<p>下面举个例子：</p>
+<p>函数可以有属性。每个函数都有一个特殊的属性叫作原型prototype</p>
+<pre class=" language-javascript"><code class="language-javascript"><span class="token keyword">function</span> <span class="token function">doSomething</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span><span class="token punctuation">}</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span> doSomething<span class="token punctuation">.</span>prototype <span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p> 控制台输出 </p>
+<pre class=" language-javascript"><code class="language-javascript"><span class="token punctuation">{</span>
+    constructor<span class="token punctuation">:</span> ƒ <span class="token function">doSomething</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    __proto__<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        constructor<span class="token punctuation">:</span> ƒ <span class="token function">Object</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        hasOwnProperty<span class="token punctuation">:</span> ƒ <span class="token function">hasOwnProperty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        isPrototypeOf<span class="token punctuation">:</span> ƒ <span class="token function">isPrototypeOf</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        propertyIsEnumerable<span class="token punctuation">:</span> ƒ <span class="token function">propertyIsEnumerable</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        toLocaleString<span class="token punctuation">:</span> ƒ <span class="token function">toLocaleString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        toString<span class="token punctuation">:</span> ƒ <span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        valueOf<span class="token punctuation">:</span> ƒ <span class="token function">valueOf</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>上面这个对象，就是大家常说的原型对象</p>
+<p>可以看到，原型对象有一个自有属性<code>constructor</code>，这个属性指向该函数，如下图关系展示</p>
+<p><img src="/image/05/prototype_01.png"></p>
+<h3 id="二、原型链"><a href="#二、原型链" class="headerlink" title="二、原型链"></a>二、原型链</h3><p>原型对象也可能拥有原型，并从中继承方法和属性，一层一层、以此类推。这种关系常被称为原型链 (prototype chain)，它解释了为何一个对象会拥有定义在其他对象中的属性和方法</p>
+<p>在对象实例和它的构造器之间建立一个链接（它是__proto____属性，是从构造函数的prototype属性派生的），之后通过上溯原型链，在构造器中找到这些属性和方法</p>
+<p>下面举个例子：</p>
+<pre class=" language-javascript"><code class="language-javascript"><span class="token keyword">function</span> <span class="token function">Person</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>name <span class="token operator">=</span> name<span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>age <span class="token operator">=</span> <span class="token number">18</span><span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>sayName <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>name<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span class="token comment" spellcheck="true">// 第二步 创建实例</span>
+<span class="token keyword">var</span> person <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Person</span><span class="token punctuation">(</span><span class="token string">'person'</span><span class="token punctuation">)</span>
+</code></pre>
+<p><img src="/image/05/prototype_02.png"></p>
+<p>下面分析一下：</p>
+<p>构造函数Person存在原型对象Persion.prototype</p>
+<p>构造函数生成实例对象person，persion的__proto__指向构造函数Person原型对象</p>
+<p>Person.prototype.<strong>proto</strong> 指向内置对象，因为 Person.prototype 是个对象，默认是由 Object函数作为类创建的，而 Object.prototype 为内置对象</p>
+<p>Person.<strong>proto</strong> 指向内置匿名函数 anonymous，因为 Person 是个函数对象，默认由 Function 作为类创建</p>
+<p>Function.prototype 和 Function.__proto__同时指向内置匿名函数 anonymous，这样原型链的终点就是 null</p>
+<h3 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h3><p>下面首先要看几个概念：</p>
+<p>__proto__作为不同对象之间的桥梁，用来指向创建它的构造函数的原型对象的<br><img src="/image/05/prototype_03.png"></p>
+<p> 每个对象的<code>__proto__</code>都是指向它的构造函数的原型对象<code>prototype</code>的 </p>
+<pre class=" language-javascript"><code class="language-javascript">person1<span class="token punctuation">.</span>__proto__ <span class="token operator">===</span> Person<span class="token punctuation">.</span>prototype
+</code></pre>
+<p> 构造函数是一个函数对象，是通过 <code>Function</code>构造器产生的 </p>
+<pre class=" language-javascript"><code class="language-javascript">Person<span class="token punctuation">.</span>__proto__ <span class="token operator">===</span> Function<span class="token punctuation">.</span>prototype
+</code></pre>
+<p> 原型对象本身是一个普通对象，而普通对象的构造函数都是<code>Object</code> </p>
+<pre class=" language-javascript"><code class="language-javascript">Person<span class="token punctuation">.</span>prototype<span class="token punctuation">.</span>__proto__ <span class="token operator">===</span> Object<span class="token punctuation">.</span>prototype
+</code></pre>
+<p> 刚刚上面说了，所有的构造器都是函数对象，函数对象都是 <code>Function</code>构造产生的 </p>
+<pre class=" language-javascript"><code class="language-javascript">Object<span class="token punctuation">.</span>__proto__ <span class="token operator">===</span> Function<span class="token punctuation">.</span>prototype
+</code></pre>
+<p> <code>Object</code>的原型对象也有<code>__proto__</code>属性指向<code>null</code>，<code>null</code>是原型链的顶端 </p>
+<pre class=" language-javascript"><code class="language-javascript">Object<span class="token punctuation">.</span>prototype<span class="token punctuation">.</span>__proto__ <span class="token operator">===</span> <span class="token keyword">null</span>
+</code></pre>
+<p>下面作出总结：</p>
+<p>一切对象都是继承自Object对象，Object 对象直接继承根源对象null</p>
+<p>一切的函数对象（包括 Object 对象），都是继承自 Function 对象</p>
+<p>Object 对象直接继承自 Function 对象</p>
+<p>Function对象的__proto__会指向自己的原型对象，最终还是继承自Object对象</p>
+
       </section>
 
       
       
+        <nav class="article-nav">
+          
+          
+            <div class="article-nav-item layout-padding">
+  <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
+    
+    <div class="card-text">
+      
+        <a href="/2020/05/18/4/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">async/await和promise的执行顺序</h2>
+        </a>
+      
+      <div class="card-text--row">Older</div>
+    </div>
+  </article>
+</div>
+          
+        </nav>
+      
 
-      
-      
+      <section class="page-message-container layout-padding">
+        
+
+
+  
+  
+
+  
+  
+
+
+      </section>
     </div>
     <div class="widget-info">
       <section class="widget-author widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
@@ -165,6 +280,8 @@
 
       
 
+      
+
       <section class="widget-categorys widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
   <div class="widget-title">
     <svg class="icon icon-categories" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -201,7 +318,6 @@
     </div>
   </article>
 </div>
-
 
     <!-- footer container -->
 <footer id="footer" class="footer">
