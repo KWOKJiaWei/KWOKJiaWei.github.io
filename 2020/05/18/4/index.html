@@ -24,7 +24,7 @@
 
   
 
-  <title>Kwok</title>
+  <title>async/await和promise的执行顺序 | Kwok</title>
 
   
 
@@ -99,16 +99,22 @@
     <div class="header-content">
       <div class="post-text layout-block">
         <div class="layout-margin">
-          <h1 class="title-wrap"></h1>
+          <h1 class="title-wrap">async/await和promise的执行顺序</h1>
           <h2 class="title-sub-wrap">
             <strong>KWOK JiaWei</strong>
             <span>发布于</span>
-            <time  class="article-date" datetime="2022-10-17T12:53:38.994Z" itemprop="datePublished">2022-10-17</time>
+            <time  class="article-date" datetime="2020-05-18T13:11:11.000Z" itemprop="datePublished">2020-05-18</time>
           </h2>
           <ul class="wrap-list dark">
   
+    <li><a href="/categories/JavaScript/">📒 JavaScript</a></li>
+  
 </ul>
           <ul class="wrap-list dark">
+  
+    <li><a href="/tags/JavaScript/">🏷️ JavaScript</a></li>
+  
+    <li><a href="/tags/Promise/">🏷️ Promise</a></li>
   
 </ul>
         </div>
@@ -132,7 +138,121 @@
       
       
       <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
-        
+        <p>主要内容：</p>
+<ol>
+<li>对于async await的理解</li>
+<li>画图一步步看清宏任务、微任务的执行过程</li>
+</ol>
+<p>接下来我们测试一下，看看自己有没有必要接着往下看：</p>
+<p><img src="/image/04/asnyc_01.webp"></p>
+<p>注：因为这是一道前端面试题，所以答案是以浏览器的机制为准，在node平台上运行会有差异。</p>
+<blockquote>
+<p>答案：script start</p>
+</blockquote>
+<blockquote>
+<p>async1 start</p>
+</blockquote>
+<blockquote>
+<p>async2</p>
+</blockquote>
+<blockquote>
+<p>promise1</p>
+</blockquote>
+<blockquote>
+<p>script end</p>
+</blockquote>
+<blockquote>
+<p>promise2</p>
+</blockquote>
+<blockquote>
+<p>async1 end</p>
+</blockquote>
+<blockquote>
+<p>setTimeout</p>
+</blockquote>
+<p>如果你的运行结果和答案的一直，可以选择跳过这篇文章啦！</p>
+<h1 id="对于async-await的理解"><a href="#对于async-await的理解" class="headerlink" title="对于async await的理解"></a>对于async await的理解</h1><p>这部分，主要会讲解3点内容</p>
+<ol>
+<li>async做了一件什么事？</li>
+<li>await在等什么？</li>
+<li>await等到之后，做了一件什么事？</li>
+<li>补充：async、await和promise有哪些优势？</li>
+<li>async做了一件什么事？</li>
+</ol>
+<p><strong>一句话概括 : 带async关键字的函数，它使得你函数的返回值必定是promise对象</strong></p>
+<p>也就是，如果async关键字函数返回的不是promise，会自动用Promise.resolve()包装 ；如果async关键字函数显式地返回promise，那就以你返回的promise为准，一下是一个简单的例子，可以看到async关键字函数和普通函数返回值的区别:</p>
+<p><img src="/image/04/asnyc_02.webp"></p>
+<p>所以你看，async函数也没啥了不起的，有看到带有async关键字的函数也不用紧张，你就想它无非就是把return值包装了一下，其他就跟普通函数一样。</p>
+<p><strong>关于async关键字还有哪些需要注意的？</strong></p>
+<ul>
+<li>在语义上要理解，async表示函数内部有异步操作</li>
+<li>· 另外注意，一般await关键字要在async关键字函数的内部，await写在外面会报错。</li>
+</ul>
+<h1 id="2-await在等什么？"><a href="#2-await在等什么？" class="headerlink" title="2. await在等什么？"></a>2. await在等什么？</h1><p><strong>一句概括：await等的是右侧表达式的结果，</strong>也就是说，右侧如果是函数，name函数的return值就是—表达式的结果；右侧如果是一个’hello’或者什么值，那表达式的结果就是’hello’</p>
+<p><img src="/image/04/asnyc_03.webp"></p>
+<p>这里要注意一点，可能大家都知道await会让出线程，阻塞后面的代码，name上面例子中，’async2’和’script start’谁会先打印呢？是从左向右执行，一旦碰到await直接跳出，阻塞async2（）的执行？还是从右向左，先执行async2后，发现await关键字，于是让出线程，阻塞代码呢？</p>
+<p>实践的结论是，从右向左。先打印async2，后打印script start</p>
+<h1 id="3-await等到之后，做了一件什么事情？"><a href="#3-await等到之后，做了一件什么事情？" class="headerlink" title="3. await等到之后，做了一件什么事情？"></a>3. await等到之后，做了一件什么事情？</h1><p>那么右侧表达式的结果，就是await要等的东西。</p>
+<p>等到之后，对于await来说，分2个情况</p>
+<ul>
+<li>不是promise对象</li>
+<li>是promise对象</li>
+</ul>
+<p>如果不是promise，await会阻塞后面的代码，先执行async外面的同步代码，同步代码执行完，再回到async内部，把这个非promise的东西作为await表达式的结果。</p>
+<p>如果它等到的是一个promise对象，await也会暂停async后面的代码，先执行async外面的同步代码，等着Promise对象fulfilled，然后把resolve的参数作为await表达式的运行结果。</p>
+<h1 id="2-gt-画图一步步看清宏任务、微任务的执行过程"><a href="#2-gt-画图一步步看清宏任务、微任务的执行过程" class="headerlink" title="2>画图一步步看清宏任务、微任务的执行过程"></a>2&gt;画图一步步看清宏任务、微任务的执行过程</h1><p>我们以考片的经典面试题为例，分析这个例子中的宏任务和微任务。</p>
+<p>什么是宏任务和微任务？W3C规定：</p>
+<blockquote>
+<p>…3. Run: Run the selected task</p>
+</blockquote>
+<blockquote>
+<p>….6. Microtasks: Perform a microtask checkpoint.</p>
+</blockquote>
+<blockquote>
+<ol start="7">
+<li>Update the rendering.</li>
+</ol>
+</blockquote>
+<p>一次时间循环包括：执行tasks，检查Microtasks队列并执行，执行UI渲染（如果需要）</p>
+<ul>
+<li>tasks任务包括：函数、加入队列的事件回调。</li>
+<li>Microtasks任务包括：Promise.then、MutationObserver回调、process.nextTick</li>
+</ul>
+<p>也就是说,一段代码会被分为两部分，tasks部分和Microtasks部分，执行完后，对该段代码内的UI变更进行处理（不包含内部为了执行代码立即进行的重绘），很明显Microtasks就是为了实现异步操作而设计的。</p>
+<p>好了，言归正传，继续看我们之前的题：</p>
+<p><img src="/image/04/asnyc_04.webp"></p>
+<p>一段代码执行时，会先执行宏观任务中的同步代码，如果执行中遇到setTimeout之类宏任务，那么就把这个setTimeout内部的函数推入【宏任务的队列】中，下一轮宏任务执行时调用。</p>
+<p>如果在执行中遇到promise.then( )之类的微任务，就会推入到【当前宏任务的微任务队列中，在本轮宏任务的同步代码执行都完成后，依次执行所有的任务1、2、3】</p>
+<p><img src="/image/04/asnyc_05.webp"></p>
+<p>首先，直接打印同步代码 console.log(‘script start’)</p>
+<p><img src="/image/04/asnyc_06.webp"></p>
+<p> 将setTimeout放入宏任务队列 </p>
+<p><img src="/image/04/asnyc_07.webp"></p>
+<p>此时我们开始启动async1函数，函数带有async关键字，但是它只是把return值包装成了promise，其他跟普通函数没有什么区别，按照函数内部分执行顺序，我们会先打印console.log(‘async1 start’)</p>
+<p><img src="/image/04/asnyc_08.webp"></p>
+<p> 接下来我们遇到的就是await async2( )，前文提到await，它先计算出右侧结果，并暂时中断async函数。因此目前就直接打印console.log（’async2’） </p>
+<p><img src="/image/04/asnyc_09.webp"></p>
+<p> 被阻塞后，要执行async之外的代码，执行到new Promise（），Promise构造函数是直接调用的同步代码，所以此处console.log（’promise1’） </p>
+<p><img src="/image/04/asnyc_10.webp"></p>
+<p>代码接着运行到promise.then( )，发现这是一个微任务，所以暂时不打印，只是推入当前宏任务的微任务队列中。</p>
+<p><strong>注意：这里只是把promise.then( )推入微任务队列中，并没有执行。微任务会在当前宏任务的同步代码执行完毕后，才会依次执行</strong></p>
+<p><img src="/image/04/asnyc_11.webp"></p>
+<p>紧接着打印同步代码console.log(‘script end’)，此刻async外的代码终于走结束了，就该回到await表达式那里，执行await Promise.resolve(undefined)了</p>
+<p><img src="/image/04/asnyc_12.webp"></p>
+<p>回到async内部，执行await Promise.resolve(undefined)，这部分可能不太好理解，如果一个Promise被传递给一个await 操作符，await将等待Promise正常处理完成后并返回其处理结果。此处的await Promise.resolve( )就类似于</p>
+<blockquote>
+<p>Promise.resolve(undefined).then(undefined) =&gt; { }</p>
+</blockquote>
+<p>把then执行完，才是await async2（）执行结束，await async2（）执行结束，才能继续执行后面的代码</p>
+<p><img src="/image/04/asnyc_13.webp"></p>
+<p>此时当前的宏任务1已执行完毕，要处理微任务队列中的代码，微任务队列，也要遵循先进先出的原则：</p>
+<ul>
+<li>执行微任务1，打印promise1</li>
+<li>执行微任务2，没什么内容</li>
+</ul>
+<p>在执行微任务2后，await async2（）的语句就彻底结束了，后面的代码不会再阻塞，所以打印console.log（’async1 end’），宏观任务1执行完之后，随之执行宏任务2，最后打印了console.log(‘setTimeout’)</p>
+<p>不知道经过这么详细的解释之后，你是否看懂了async await和promise的执行顺序呢？提醒小伙伴哦，部分浏览器打印出来的顺序可能会存在一些小的差异性，小伙伴要主动研究查找原因哦！</p>
+
       </section>
 
       
@@ -175,13 +295,13 @@
         <svg class="icon icon-categories" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <path d="M900.3614811 257.09082106h-339.81629553l-67.96326003-101.9448889c-19.41807444-29.12711113-48.54518557-43.69066667-82.52681443-43.69066667H123.6385189c-53.39970333 0-97.09036999 43.69066667-97.09037113 97.09036999v582.54222222c0 53.39970333 43.69066667 97.09036999 97.09037113 97.09037002h776.7229622c53.39970333 0 97.09036999-43.69066667 97.09037113-97.09037002V354.18119104c0-53.39970333-43.69066667-97.09036999-97.09037113-97.09036998z m-97.09036999 242.72592554H220.72888889c-24.27259221 0-48.54518557-24.27259221-48.54518556-48.54518556s24.27259221-48.54518557 48.54518556-48.54518444h582.54222222c24.27259221 0 48.54518557 24.27259221 48.54518556 48.54518444s-24.27259221 48.54518557-48.54518556 48.54518556z" fill="currentColor"></path>
 </svg>
-        0
+        1
       </div>
       <div class="count-box--item">
         <svg class="icon icon-tags" viewBox="0 0 1098 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <path d="M283.42180005 272q0-28.38857157-20.09142843-48.48000001t-48.47999998-20.09142842-48.48000002 20.09142842-20.09142846 48.48000001 20.09142846 48.48 48.48000002 20.09142843 48.47999998-20.09142843 20.09142843-48.48zM855.0332285 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.03999997 263.58857157q-20.9142853 19.81714313-48.75428534 19.81714312-28.38857157 0-48.20571468-19.81714312l-383.04-383.58857157q-20.36571468-19.81714313-34.55999999-54.10285688t-14.19428534-62.6742853l0-222.85714313q0-27.84000002 20.36571469-48.20571469t48.2057147-20.36571466l222.85714313 0q28.38857157 0 62.6742853 14.19428529t54.65142842 34.55999999l383.04000001 382.49142843q19.81714313 20.9142853 19.81714314 48.75428532zM1060.74751475 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.04 263.58857157q-20.9142853 19.81714313-48.75428531 19.81714312-19.26857155 0-31.61142843-7.47428531t-28.38857159-24.13714314l251.79428534-251.7942853q19.81714313-19.81714313 19.81714308-48.20571469 0-27.84000002-19.81714308-48.75428531l-383.04000001-382.49142845q-20.36571468-20.36571468-54.65142842-34.55999999t-62.67428532-14.19428534l120 0q28.38857157 0 62.67428532 14.19428534t54.65142842 34.55999999l383.03999998 382.49142845q19.81714313 20.9142853 19.81714314 48.75428531z" fill="currentColor"></path>
 </svg>
-        0
+        2
       </div>
     </div>
   </div>
@@ -201,6 +321,12 @@
   <div class="widget-body">
     <ul class="categorys-list">
       
+        <li class="categorys-list-item">
+          <a href="/categories/JavaScript/">
+            JavaScript (1)
+          </a>
+        </li>
+      
     </ul>
   </div>
 </section>
@@ -214,7 +340,7 @@
   </div>
   <div class="widget-body">
     <div class="tags-cloud">
-      
+      <a href="/tags/JavaScript/" style="font-size: 10px;" class="tags-cloud-0">JavaScript</a> <a href="/tags/Promise/" style="font-size: 10px;" class="tags-cloud-0">Promise</a>
     </div>
   </div>
 </section>
