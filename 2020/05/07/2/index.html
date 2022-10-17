@@ -24,7 +24,7 @@
 
   
 
-  <title>文章分类 | Kwok</title>
+  <title>端口号被占用的解决方法 | Kwok</title>
 
   
 
@@ -46,7 +46,7 @@
   <div class="root-container">
     
 <!-- header container -->
-<header class="header-container">
+<header class="header-container post">
   
     <div class="post-image" style="background-image: url(https://qiniu.sukoshi.xyz/src/images/68686407_p0.jpg)"></div>
   
@@ -96,36 +96,96 @@
 
   
   
-
-  
-  
     <div class="header-content">
-      <div class="post-text layout-block layout-padding">
-        <h1 class="title-wrap">文章分类</h1>
-        
+      <div class="post-text layout-block">
+        <div class="layout-margin">
+          <h1 class="title-wrap">端口号被占用的解决方法</h1>
+          <h2 class="title-sub-wrap">
+            <strong>KWOK JiaWei</strong>
+            <span>发布于</span>
+            <time  class="article-date" datetime="2020-05-07T12:21:13.000Z" itemprop="datePublished">2020-05-07</time>
+          </h2>
+          <ul class="wrap-list dark">
+  
+    <li><a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/">📒 计算机</a></li>
+  
+</ul>
+          <ul class="wrap-list dark">
+  
+    <li><a href="/tags/%E7%AB%AF%E5%8F%A3/">🏷️ 端口</a></li>
+  
+</ul>
+        </div>
       </div>
     </div>
+  
+
+  
   
   
 </header>
 
-    <!-- 分页(其他自定义页面) -->
+    <!-- 文章 -->
 
-<!-- 自定义页面 -->
-
+<!-- 文章内容 -->
 <div class="body-container">
   <article class="content-container layout-block post-container">
     <div class="article-info">
       
+      
+      
+      
       <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
-        
+        <p> <img src="/image/02/computerPort.jpg"></p>
+<h4 id="引入问题"><a href="#引入问题" class="headerlink" title="引入问题"></a>引入问题</h4><p><img src="/image/02/port_0.jpg"></p>
+<h3 id="解决方案："><a href="#解决方案：" class="headerlink" title="解决方案："></a>解决方案：</h3><p> 一、查看端口号对应的进程 </p>
+<blockquote>
+<p>查看所有进程信息：netstat -ano | more<br>查看指定端口进程信息(这里演示的是8080端口)：netstat -ano | findstr 8080</p>
+</blockquote>
+<p> <strong>netstat -ano | more的用法</strong> </p>
+<p><img src="/image/02/port_01.png"></p>
+<p>  <strong>netstat -ano | findstr 8080的用法</strong> </p>
+<p><img src="/image/02/port_02.png"></p>
+<p>  二、根据pid杀死该进程  </p>
+<p><img src="/image/02/port_03.png"></p>
+<p>  <strong>此时，占用对应端口号的进程就被终止了。我们就可以使用该端口了~</strong> </p>
+
       </section>
 
       
       
+        <nav class="article-nav">
+          
+            <div class="article-nav-item layout-padding">
+  <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
+    
+    <div class="card-text">
+      
+        <a href="/2020/05/13/3/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">JS运行机制</h2>
+        </a>
+      
+      <div class="card-text--row">Newer</div>
+    </div>
+  </article>
+</div>
+          
+          
+        </nav>
+      
 
-      
-      
+      <section class="page-message-container layout-padding">
+        
+
+
+  
+  
+
+  
+  
+
+
+      </section>
     </div>
     <div class="widget-info">
       <section class="widget-author widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
@@ -162,6 +222,8 @@
     </div>
   </div>
 </section>
+
+      
 
       
 
@@ -207,7 +269,6 @@
     </div>
   </article>
 </div>
-
 
     <!-- footer container -->
 <footer id="footer" class="footer">
